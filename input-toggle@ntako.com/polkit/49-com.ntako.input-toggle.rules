@@ -1,0 +1,5 @@
+polkit.addRule(function(action, subject) {
+    if (action.id == "com.ntako.input-toggle" && subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});

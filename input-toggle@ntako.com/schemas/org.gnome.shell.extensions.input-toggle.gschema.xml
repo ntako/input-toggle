@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.input-toggle"
+          path="/org/gnome/shell/extensions/input-toggle/">
+    <key name="devices-state" type="s">
+      <default>"[]"</default>
+      <summary>Devices Status</summary>
+      <description>
+        It contains a JSON string that represents the current 
+        state of selected input devices, e.g.:
+        [{"device":"ELAN Touchscreen","enabled":true}]
+      </description>
+    </key>
+    <key name="policy-installed" type="b">
+      <default>false</default>
+      <summary>Whether the system policy and scripts have already been installed</summary>
+      <description>
+        This key prevents the policy and script files from being reinstalled 
+        every time the extension starts.
+      </description>
+    </key>
+  </schema>
+</schemalist>

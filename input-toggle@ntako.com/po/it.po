@@ -1,0 +1,35 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Input Toggle package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Input Toggle\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-31 10:12+0100\n"
+"PO-Revision-Date: 2025-10-31 10:23+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.8\n"
+
+#: DynamicInputButton.js:71
+msgid "enabled"
+msgstr "abilitato"
+
+#: DynamicInputButton.js:71
+msgid "disabled"
+msgstr "disabilitato"
+
+#: DynamicInputButton.js:86
+msgid "Open Preferences"
+msgstr "Apri Preferenze"
+
+#: prefs.js:11
+msgid "Devices"
+msgstr "Dispositivi"
