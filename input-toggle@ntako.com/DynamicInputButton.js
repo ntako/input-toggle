@@ -12,7 +12,7 @@ import * as Lib from './lib.js';
 const DynamicInputButton = GObject.registerClass(
 class DynamicInputButton extends PanelMenu.Button {
     _init(settingsManager) {
-        super._init(0.0, 'Input Toggle');
+        super._init(0.5, 'Input Toggle');
         
         this._settingsManager = settingsManager;
         this._settings = this._settingsManager.settings;
