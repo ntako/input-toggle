@@ -2,12 +2,14 @@
   "uuid": "input-toggle@ntako.com",
   "name": "Input Toggle",
   "description": "Abilita o disabilita rapidamente dispositivi di input (touchscreen, touchpad, tablet, ecc.) direttamente dal pannello superiore.",
-  "version": 8,
+  "version": 9,
   "shell-version": [
     "45",
     "46",
     "47",
-    "48"
+    "48",
+    "49",
+    "50"
   ],
   "settings-schema": "org.gnome.shell.extensions.input-toggle",
   "gettext-domain": "input-toggle",

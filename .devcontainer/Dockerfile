@@ -1,4 +1,4 @@
-ARG FEDORA_VERSION=39
+ARG FEDORA_VERSION=44
 FROM fedora:${FEDORA_VERSION}
 
 # Installa GNOME e strumenti essenziali per estensioni
