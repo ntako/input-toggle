@@ -3,6 +3,7 @@ import Gio from 'gi://Gio';
 
 export const DEVICES_KEY = 'devices-state';
 export const POLICY_KEY = 'policy-installed';
+export const SETTINGS_KEY = 'selected-devices';
 const POLICY_NAME = 'com.ntako.input-toggle.policy';
 const RULE_NAME = '49-com.ntako.input-toggle.rules';
 const SCRIPT_NAME = 'com.ntako.input-toggle.sh';
@@ -47,29 +48,41 @@ export function setPolicyInstalled(settingsManager, value) {
 //  SYSTEM & POLICY MANAGEMENT
 // ============================================================
 
-function runCommand(cmd) {
+// Esegue un comando privilegiato in modo asincrono (senza bloccare la shell)
+// e notifica l'esito reale tramite onComplete(success), invece di assumere
+// che l'operazione sia riuscita non appena lanciata.
+function runPrivileged(argv, onComplete) {
     try {
-        GLib.spawn_command_line_async(cmd);
+        const proc = Gio.Subprocess.new(argv, Gio.SubprocessFlags.NONE);
+        proc.wait_async(null, (source, result) => {
+            let success = false;
+            try {
+                source.wait_finish(result);
+                success = source.get_successful();
+            } catch (e) {
+                log(`[input-toggle] Error waiting for privileged command: ${e}`);
+            }
+            onComplete?.(success);
+        });
     } catch (e) {
-        log(`[input-toggle] Error running command: ${cmd} — ${e}`);
+        log(`[input-toggle] Error running privileged command: ${e}`);
+        onComplete?.(false);
     }
 }
 
-export function installPolicy(extPath) {
-    const cmd = `
-        pkexec bash -c '
-        [ ! -f "${POLICY_DEST}" ] && cp "${extPath}/polkit/${POLICY_NAME}" "${POLICY_DEST}";
-        [ ! -f "${RULE_DEST}" ] && cp "${extPath}/polkit/${RULE_NAME}" "${RULE_DEST}";
-        [ ! -f "${SCRIPT_DEST}" ] && cp "${extPath}/scripts/${SCRIPT_NAME}" "${SCRIPT_DEST}" && chmod +x "${SCRIPT_DEST}";
-        '
-    `;
-    runCommand(cmd);
+export function installPolicy(extPath, onComplete) {
+    const script = [
+        `[ ! -f "${POLICY_DEST}" ] && cp "${extPath}/polkit/${POLICY_NAME}" "${POLICY_DEST}"`,
+        `[ ! -f "${RULE_DEST}" ] && cp "${extPath}/polkit/${RULE_NAME}" "${RULE_DEST}"`,
+        `[ ! -f "${SCRIPT_DEST}" ] && cp "${extPath}/scripts/${SCRIPT_NAME}" "${SCRIPT_DEST}" && chmod +x "${SCRIPT_DEST}"`,
+        'exit 0',
+    ].join(' ; ');
+    runPrivileged(['pkexec', 'bash', '-c', script], onComplete);
 }
 
-export function removePolicy(extPath) {
-    const cmd = `pkexec bash -c 'rm -f ${POLICY_DEST} ${RULE_DEST} ${SCRIPT_DEST}'`;
+export function removePolicy(extPath, onComplete) {
     log(`[input-toggle] Removing policy and scripts`);
-    runCommand(cmd);
+    runPrivileged(['pkexec', 'bash', '-c', `rm -f ${POLICY_DEST} ${RULE_DEST} ${SCRIPT_DEST}`], onComplete);
 }
 
 // ============================================================

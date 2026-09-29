@@ -1,4 +1,5 @@
 import Adw from 'gi://Adw';
+import Gtk from 'gi://Gtk';
 import {ExtensionPreferences, gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 import SettingsManager from './settingsManager.js';
 import * as Lib from './lib.js';
@@ -35,6 +36,36 @@ export default class InputTogglePrefs extends ExtensionPreferences {
         }
 
         page.add(group);
+        this._buildMaintenanceGroup(page, settingsManager);
         window.add(page);
+    }
+
+    _buildMaintenanceGroup(page, settingsManager) {
+        const maintenanceGroup = new Adw.PreferencesGroup({ title: _('Maintenance') });
+
+        const removeRow = new Adw.ActionRow({
+            title: _('Remove system integration'),
+            subtitle: _('Uninstalls the polkit policy and helper script that were installed with admin rights'),
+        });
+
+        const removeButton = new Gtk.Button({
+            label: _('Remove'),
+            valign: Gtk.Align.CENTER,
+            css_classes: ['destructive-action'],
+        });
+        removeButton.connect('clicked', () => {
+            removeButton.sensitive = false;
+            Lib.removePolicy(this.path, (success) => {
+                removeButton.sensitive = true;
+                if (success)
+                    settingsManager.setBoolean(Lib.POLICY_KEY, false);
+                else
+                    log('[input-toggle] Failed to remove system policy and scripts.');
+            });
+        });
+
+        removeRow.add_suffix(removeButton);
+        maintenanceGroup.add(removeRow);
+        page.add(maintenanceGroup);
     }
 }

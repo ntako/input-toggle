@@ -13,15 +13,17 @@ export default class InputToggleExtension extends Extension {
         this._settingsManager = new SettingsManager(this.getSettings());
         this._settings = this._settingsManager.settings;
 
-        // Installa la policy pkexec se non presente
+        // Installa la policy pkexec se non presente (una tantum: il flag
+        // viene aggiornato solo se l'installazione è andata davvero a buon fine)
         if (!this._settingsManager.getBoolean(Lib.POLICY_KEY)) {
-            try {
-                Lib.installPolicy(this.path);
-                this._settingsManager.setBoolean(Lib.POLICY_KEY, true);
-                log('[input-toggle] Policy and scripts installed succesfully.');
-            } catch (e) {
-                log(`[input-toggle] Error insstalling policy and scripts: ${e}`);
-            }
+            Lib.installPolicy(this.path, (success) => {
+                if (success) {
+                    this._settingsManager?.setBoolean(Lib.POLICY_KEY, true);
+                    log('[input-toggle] Policy and scripts installed succesfully.');
+                } else {
+                    log('[input-toggle] Policy installation failed or was cancelled; will retry on next enable.');
+                }
+            });
         }
 
         // Ripristina lo stato salvato dei dispositivi (dopo leggero delay)
@@ -50,10 +52,10 @@ export default class InputToggleExtension extends Extension {
     disable() {
         log('[input-toggle] Disabling extension');
 
-        if (Lib.isPolicyInstalled(this._settingsManager)) {
-            Lib.removePolicy(this.path);
-            Lib.setPolicyInstalled(this._settingsManager, false);
-        }
+        // La policy pkexec resta installata tra un disable/enable e l'altro
+        // (es. riavvii della shell, aggiornamenti): rimuoverla ad ogni disable
+        // costringerebbe a una nuova autenticazione admin ad ogni enable.
+        // La rimozione va fatta esplicitamente dalle Preferenze.
 
         if (this._button) {
             this._button.destroy();

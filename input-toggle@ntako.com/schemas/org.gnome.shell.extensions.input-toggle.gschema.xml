@@ -15,8 +15,16 @@
       <default>false</default>
       <summary>Whether the system policy and scripts have already been installed</summary>
       <description>
-        This key prevents the policy and script files from being reinstalled 
+        This key prevents the policy and script files from being reinstalled
         every time the extension starts.
+      </description>
+    </key>
+    <key name="selected-devices" type="as">
+      <default>[]</default>
+      <summary>Selected devices</summary>
+      <description>
+        Names of the input devices chosen in Preferences to be shown
+        and managed from the panel menu.
       </description>
     </key>
   </schema>
