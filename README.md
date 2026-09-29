@@ -1,6 +1,8 @@
 # Input Toggle
 
-This extension map input devices from /sys/class/input and with pkexec inhibite the device from enabled file
+This is the GNOME Shell extension nobody needed — but since I couldn't find one that actually works on Wayland, I built it myself to save my coworkers' lives. When you work in a team, there's always someone who can't keep their fingers to themselves and keeps poking your monitor. Annoying enough on its own, but when your monitor happens to be a touchscreen... it becomes a matter of life and death!
+
+This extension maps input devices from `/sys/class/input` and uses `pkexec` to inhibit a device via its `enabled` file.
 
 ---
 
@@ -14,7 +16,7 @@ make install
 
 ## Activation
 
-On extension activation or deactivation, pkexec will prompt for the sudo password to install or remove the required scripts and policies.
+On first activation, pkexec will prompt for the sudo password to install the required scripts and policies. Once installed, they persist across disable/enable cycles (e.g. shell restarts), so you won't be prompted again. Use the **Remove system integration** button in Preferences if you want to uninstall them explicitly.
 
 ## Configuration
 1. Open extension **Preferences**.  
@@ -32,4 +34,4 @@ On extension activation or deactivation, pkexec will prompt for the sudo passwor
 ---
 
 ## Notes
-- In future versions, it would be ideal to add a button for installing and removing scripts and policies in the extension preferences.
+- Devices to show in the panel popup are chosen in Preferences and stored per-device state in `devices-state`; nothing is toggled until a device is selected there.
