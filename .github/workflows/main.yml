@@ -14,11 +14,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install and cache dependencies
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: make gettext gnome-shell
-          version: 1.0  # To increment if changing packages
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make gettext gnome-shell
 
       - name: Build extension from scratch
         run: |
